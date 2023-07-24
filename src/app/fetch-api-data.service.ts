@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
 //Declaring the api url that will provide data for the client app
 const apiUrl = 'https://greg-kennedy-myflix.herokuapp.com/';
@@ -16,14 +16,16 @@ export class FetchApiDataService {
   // User registration
   public userRegistration(userDetails: any): Observable<any> {
     return this.http.post(apiUrl + 'users', userDetails).pipe(
-      catchError(this.handleError)
+      catchError(this.handleError),
+      tap(() => console.log('User created '))
     );
   }
 
   // User login 
   public userLogin(userDetails: any): Observable<any> {
     return this.http.post(apiUrl + 'login', userDetails).pipe(
-      catchError(this.handleError)
+      catchError(this.handleError),
+      tap(() => console.log('user logged in'))
     );
   }
 
