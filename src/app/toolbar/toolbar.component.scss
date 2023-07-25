@@ -1,0 +1,55 @@
+
+/* Toolbar styles */
+mat-toolbar {
+  position: sticky;
+  top: 50px;
+    background-color: #2196f3;
+    color: #ffffff;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    border-radius: 10px;
+  }
+  
+  mat-toolbar button {
+    margin-left: 8px;
+    cursor: pointer;
+  }
+  
+  mat-toolbar button:hover {
+    background-color: #1976d2;
+  }
+  
+  mat-icon.profile-icon,
+  mat-icon.logout-icon,
+  mat-icon.movie-icon {
+    font-size: 24px;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  
+  mat-toolbar button:hover mat-icon {
+    transform: scale(1.2);
+  }
+  
+  
+  .search-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0 8px;
+    background-color: #fff;
+  }
+  
+  
+  .search-container input {
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 4px;
+    width: 150px; 
+    height: 20px;
+  }
+  
