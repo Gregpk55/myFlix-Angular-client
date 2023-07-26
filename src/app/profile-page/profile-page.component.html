@@ -1,5 +1,24 @@
-<div style="display: flex; justify-content: flex-end;">
+<div style="display: flex; justify-content: space-between; padding: 10px;">
+  <div>
+    <h1>My Flix Favorites</h1>
+  </div>
+  <div>
     <app-toolbar></app-toolbar>
   </div>
+</div>
 
+<div style="display: flex; justify-content: flex-end;">
+  <button mat-icon-button color="primary" (click)="openEditUserDialog()">
+    <mat-icon>build</mat-icon>
+  </button>
+</div>
 
+<div>
+  <ul>
+    <li *ngFor="let movie of favoriteMovies">{{ movie.title }}</li>
+  </ul>
+</div>
+
+  
+  
+  

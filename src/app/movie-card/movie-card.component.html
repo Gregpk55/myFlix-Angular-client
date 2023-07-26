@@ -1,24 +1,30 @@
-
-
-<div style="display: flex; justify-content: flex-end;">
+<div style="display: flex; justify-content: space-between; padding: 10px;">
+  <div>
+    <h1>My Flix</h1>
+  </div>
+  <div>
     <app-toolbar></app-toolbar>
   </div>
+</div>
   
   <div class="container">
     <mat-card *ngFor="let movie of movies;" class="movie-card">
       <mat-card-header>
-        <mat-card-title>{{movie.Title}}</mat-card-title>
-        <mat-card-subtitle>Directed by: {{movie.Director.Name}}</mat-card-subtitle>
+        <mat-card-title>{{ movie.Title }}</mat-card-title>
+        <mat-card-subtitle>Directed by: {{ movie.Director.Name }}</mat-card-subtitle>
       </mat-card-header>
       <div class="image-container">
-        <img src="{{movie.ImagePath}}" alt="{{movie.Title}}" />
+        <img src="{{ movie.ImagePath }}" alt="{{ movie.Title }}" />
       </div>
       <mat-card-actions>
-        <button mat-button color="primary">Genre</button>
-        <button mat-button color="primary">Director</button>
-        <button mat-button color="primary">Synopsis</button>
-        <mat-icon>favorite_border</mat-icon>
+        <button mat-button color="primary" (click)="getGenre(movie.Genre.Name, movie.Genre.Description)">Genre</button>
+        <button mat-button color="primary" (click)="getDirector(movie.Director.Name, movie.Director.Bio)">Director</button>
+        <button mat-button color="primary" (click)="getSynopsis(movie.Description)">Synopsis</button>
+        <button mat-icon-button color="primary" (click)="isFavorite(movie._id) ? removeFavorite(movie._id) : addFavorite(movie._id)">
+        <mat-icon>{{ isFavorite(movie._id) ? 'favorite' : 'favorite_border' }}</mat-icon>
+      </button>
       </mat-card-actions>
     </mat-card>
   </div>
+  
   

@@ -15,14 +15,16 @@ export class ToolbarComponent {
     this.router.navigate(['/profile']);
   }
 
+
   goToMovies(): void {
     this.router.navigate(['/movies']);
   }
 
   logout(): void {
-    // Clear local storage (remove token, user info, or any other data)
+    // Clear local storage 
     localStorage.clear();
-    // Redirect to the welcome page component
     this.router.navigate(['/welcome']);
   }
+
+  
 }
