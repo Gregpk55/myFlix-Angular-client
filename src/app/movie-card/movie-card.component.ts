@@ -11,7 +11,7 @@ import { MovieInfoComponent } from '../movie-info/movie-info.component';
 })
 export class MovieCardComponent implements OnInit {
   movies: any[] = [];
-  favorites: string[] = [];
+  favorites: any[] = [];
 
   constructor(
     public fetchApiData: FetchApiDataService,
@@ -21,14 +21,25 @@ export class MovieCardComponent implements OnInit {
 
   ngOnInit(): void {
     const username = localStorage.getItem('username');
-    console.log('Username:', username); // Check the value of username in the console
+    console.log('Username:', username); 
     this.getMovies();
   }
 
   getMovies(): void {
     this.fetchApiData.getAllMovies().subscribe((response: any) => {
       this.movies = response;
+      
+      this.checkFavorites();
     });
+  }
+
+  checkFavorites(): void {
+    const username = localStorage.getItem('username');
+    if (username) {
+      this.fetchApiData.getUser(username).subscribe((response: any) => {
+        this.favorites = response.FavoriteMovies;
+      });
+    }
   }
 
   getGenre(name: string, description: string): void {
@@ -54,37 +65,47 @@ export class MovieCardComponent implements OnInit {
 
   addFavorite(id: string): void {
     console.log('Adding movie to favorites with ID:', id);
-    
-  
-    this.fetchApiData.addMovieToFavorites('username', id).subscribe(
-      (response) => {
-        console.log('API Response:', response);
-        if (response) {
-          this.favorites.push(id); 
-          console.log('Updated favorites array:', this.favorites);
-          this.snackBar.open('Added to favorites', 'OK', { duration: 2000 });
-        
-        } else {
-          console.error('API response is null or empty.');
+
+    const username = localStorage.getItem('username');
+
+    if (username && !this.isFavorite(id)) {
+      this.fetchApiData.addMovieToFavorites(username, id).subscribe(
+        (response) => {
+          console.log('API Response:', response);
+          if (response) {
+            this.favorites.push(id);
+            console.log('Updated favorites array:', this.favorites);
+            this.snackBar.open('Added to favorites', 'OK', { duration: 2000 });
+          } else {
+            console.error('API response is null or empty.');
+            this.snackBar.open('Failed to add to favorites', 'OK', { duration: 2000 });
+          }
+        },
+        (error) => {
+          console.error('Error adding movie to favorites:', error);
           this.snackBar.open('Failed to add to favorites', 'OK', { duration: 2000 });
         }
-      },
-      (error) => {
-        console.error('Error adding movie to favorites:', error);
-        this.snackBar.open('Failed to add to favorites', 'OK', { duration: 2000 });
-      }
-    );
+      );
+    } else {
+      console.log('Movie is already in favorites.');
+      this.snackBar.open('Movie is already in favorites', 'OK', { duration: 2000 });
+    }
   }
-  
-  
 
   isFavorite(id: string): boolean {
-    return this.favorites.includes(id); 
+    return this.favorites.includes(id);
   }
 
   removeFavorite(id: string): void {
-    this.fetchApiData.deleteMovieFromFavorites('username', id).subscribe(
-      (response) => {
+    const username = localStorage.getItem('username');
+  
+    if (!username) {
+      console.error('Username not found in local storage.');
+      return;
+    }
+  
+    this.fetchApiData.deleteMovieFromFavorites(username, id).subscribe(
+      () => {
         this.favorites = this.favorites.filter((movieId) => movieId !== id);
         this.snackBar.open('Removed from favorites', 'OK', { duration: 2000 });
       },
@@ -94,7 +115,31 @@ export class MovieCardComponent implements OnInit {
       }
     );
   }
-  displayFavoriteMovies(): void {
-    console.log('FavoriteMovies', this.favorites);
+  
+  
+  
+  toggleFavorite(id: string): void {
+    if (this.isFavorite(id)) {
+      this.removeFavorite(id);
+    } else {
+      const username = localStorage.getItem('username');
+      if (username) {
+        this.fetchApiData.addMovieToFavorites(username, id).subscribe(
+          (response) => {
+            if (response) {
+              this.favorites.push(id);
+              this.snackBar.open('Added to favorites', 'OK', { duration: 2000 });
+            } else {
+              console.error('API response is null or empty.');
+              this.snackBar.open('Failed to add to favorites', 'OK', { duration: 2000 });
+            }
+          },
+          (error) => {
+            console.error('Error adding movie to favorites:', error);
+            this.snackBar.open('Failed to add to favorites', 'OK', { duration: 2000 });
+          }
+        );
+      }
+    }
   }
 }

@@ -1,0 +1,61 @@
+/* profile-page.component.scss */
+
+/* Container styles for the header section */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+  }
+  
+  /* Page title styles */
+  .header-container h1 {
+    font-size: 24px;
+  }
+  
+  /* Button for edit user dialog */
+  .edit-user-button {
+    margin-left: 10px;
+  }
+  
+  /* Favorite movies list styles */
+  .favorite-movies-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  
+  .favourite-movie-card {
+    flex: 1 1 auto;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #cfe6ff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; 
+  }
+  
+  .favourite-movie-card .image-container {
+    flex: 1; 
+    position: relative; 
+    padding: 5px;
+    border-radius: 5px;
+  }
+  
+  .favourite-movie-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  
+  .favourite-movie-card mat-card-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+  }
+  
+  .favourite-movie-card mat-icon {
+    font-size: 24px;
+  }
+  
+    
