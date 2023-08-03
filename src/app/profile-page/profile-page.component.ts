@@ -29,8 +29,8 @@ export class ProfilePageComponent implements OnInit {
       this.fetchApiData.getUser(username).subscribe(
         (response) => {
           this.user = response;
-          const rawBirthday = new Date(this.user.Birthday); 
-        this.updatedUserData.Birthday = formatDate(rawBirthday, 'yyyy-MM-dd', 'en-US', 'UTC+0');
+          const rawBirthday = new Date(this.user.Birthday);
+          this.updatedUserData.Birthday = formatDate(rawBirthday, 'yyyy-MM-dd', 'en-US', 'UTC+0');
         },
         (error: any) => {
           this.showSnackBar(error);
@@ -42,11 +42,16 @@ export class ProfilePageComponent implements OnInit {
   updateProfile(): void {
     const username = localStorage.getItem('username');
     if (username) {
-      
-      this.fetchApiData.editUser(username, this.updatedUserData).subscribe(
-        () => {
+      const updatedUser = {
+        Username: this.updatedUserData.Username,
+        Email: this.updatedUserData.Email,
+        Birthday: this.updatedUserData.Birthday
+      };
+
+      this.fetchApiData.editUser(username, updatedUser).subscribe(
+        (response) => {
           this.showSnackBar('User successfully updated');
-          this.fetchUserProfile();
+          this.user = response; 
         },
         (error: any) => this.showSnackBar(error)
       );
@@ -55,7 +60,7 @@ export class ProfilePageComponent implements OnInit {
   
 
   deleteUser(): void {
-    const userId = this.user._id; 
+    const userId = this.user._id;
     this.fetchApiData.deleteUser(userId).subscribe(
       () => {
         localStorage.clear();
