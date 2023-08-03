@@ -41,7 +41,7 @@ loginUser(): void {
   // Logic for a successful user login goes here! (To be implemented)
     localStorage.setItem('username', result.user.Username);
     localStorage.setItem('token', result.token);
-     this.dialogRef.close(); // This will close the modal on success!
+     this.dialogRef.close(); 
      this.router.navigate(['movies']);
      this.snackBar.open(result, 'OK', {
         duration: 2000

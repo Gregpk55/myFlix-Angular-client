@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FetchApiDataService } from '../fetch-api-data.service';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MovieInfoComponent } from '../movie-info/movie-info.component';
-import { EditUserComponent } from '../edit-user/edit-user.component';
+import { FetchApiDataService } from '../fetch-api-data.service';
+import { Router } from '@angular/router';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-profile-page',
@@ -11,115 +10,65 @@ import { EditUserComponent } from '../edit-user/edit-user.component';
   styleUrls: ['./profile-page.component.scss']
 })
 export class ProfilePageComponent implements OnInit {
-  movie: any[] = [];
-  favoriteMovies: any[] = [];
-  
+  user: any = {};
+  updatedUserData: any = {};
 
   constructor(
     public fetchApiData: FetchApiDataService,
     public snackBar: MatSnackBar,
-    public dialog: MatDialog,
-  ) { }
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.loadFavoriteMovies();
+    this.fetchUserProfile();
   }
 
-
-  openEditUserDialog(): void {
-    this.dialog.open(EditUserComponent);
-  }
-  
-  
-  loadFavoriteMovies(): void {
+  fetchUserProfile(): void {
     const username = localStorage.getItem('username');
     if (username) {
-      this.fetchApiData.getFavoriteMovies(username).subscribe(
-        (movies: any[]) => {
-          this.favoriteMovies = movies;
-          if (this.favoriteMovies.length === 0) {
-            console.log('No movies found.');
-          } else {
-            console.log('Favorite Movies:', this.favoriteMovies);
-          }
+      this.fetchApiData.getUser(username).subscribe(
+        (response) => {
+          this.user = response;
+          const rawBirthday = new Date(this.user.Birthday); 
+        this.updatedUserData.Birthday = formatDate(rawBirthday, 'yyyy-MM-dd', 'en-US', 'UTC+0');
         },
-        (error) => {
-          console.error('Error fetching favorite movies:', error);
+        (error: any) => {
+          this.showSnackBar(error);
         }
       );
-    } else {
-      console.log('Username not found in local storage');
+    }
+  }
+
+  updateProfile(): void {
+    const username = localStorage.getItem('username');
+    if (username) {
+      
+      this.fetchApiData.editUser(username, this.updatedUserData).subscribe(
+        () => {
+          this.showSnackBar('User successfully updated');
+          this.fetchUserProfile();
+        },
+        (error: any) => this.showSnackBar(error)
+      );
     }
   }
   
 
-  toggleFavorite(id: string): void {
-    if (this.isFavorite(id)) {
-      this.removeFavorite(id);
-    } else {
-      const username = localStorage.getItem('username');
-      if (username) {
-        this.fetchApiData.addMovieToFavorites(username, id).subscribe(
-          (response) => {
-            if (response) {
-              this.favoriteMovies.push(id);
-              this.snackBar.open('Added to favorites', 'OK', { duration: 2000 });
-            } else {
-              console.error('API response is null or empty.');
-              this.snackBar.open('Failed to add to favorites', 'OK', { duration: 2000 });
-            }
-          },
-          (error) => {
-            console.error('Error adding movie to favorites:', error);
-            this.snackBar.open('Failed to add to favorites', 'OK', { duration: 2000 });
-          }
-        );
-      }
-    }
-  }
-
-  isFavorite(id: string): boolean {
-    return this.favoriteMovies.includes(id);
-  }
-
-  removeFavorite(id: string): void {
-    const username = localStorage.getItem('username');
-
-    if (!username) {
-      console.error('Username not found in local storage.');
-      return;
-    }
-
-    this.fetchApiData.deleteMovieFromFavorites(username, id).subscribe(
+  deleteUser(): void {
+    const userId = this.user._id; 
+    this.fetchApiData.deleteUser(userId).subscribe(
       () => {
-        this.favoriteMovies = this.favoriteMovies.filter((movieId) => movieId !== id);
-        this.snackBar.open('Removed from favorites', 'OK', { duration: 2000 });
+        localStorage.clear();
+        this.router.navigate(['welcome']);
+        this.showSnackBar('User successfully deleted');
       },
-      (error) => {
-        console.error('Error removing movie from favorites:', error);
-        this.snackBar.open('Failed to remove from favorites', 'OK', { duration: 2000 });
-      }
+      (error) => this.showSnackBar(error)
     );
   }
 
-  getGenre(name: string, description: string): void {
-    this.openMovieInfoDialog(name, description);
-  }
-
-  getDirector(name: string, bio: string): void {
-    this.openMovieInfoDialog(name, bio);
-  }
-
-  getSynopsis(description: string): void {
-    this.openMovieInfoDialog("Description", description);
-  }
-
-  openMovieInfoDialog(title: string, content: string): void {
-    this.dialog.open(MovieInfoComponent, {
-      data: {
-        title: title,
-        content: content,
-      }
+  showSnackBar(message: string): void {
+    this.snackBar.open(message, 'OK', {
+      duration: 2000
     });
   }
 }
