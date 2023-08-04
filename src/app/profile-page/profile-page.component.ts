@@ -21,6 +21,7 @@ export class ProfilePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchUserProfile();
+    this.updatedUserData = { ...this.user }; 
   }
 
   fetchUserProfile(): void {
@@ -47,7 +48,7 @@ export class ProfilePageComponent implements OnInit {
         Email: this.updatedUserData.Email,
         Birthday: this.updatedUserData.Birthday
       };
-
+  
       this.fetchApiData.editUser(username, updatedUser).subscribe(
         (response) => {
           this.showSnackBar('User successfully updated');
@@ -58,18 +59,27 @@ export class ProfilePageComponent implements OnInit {
     }
   }
   
-
   deleteUser(): void {
-    const userId = this.user._id;
-    this.fetchApiData.deleteUser(userId).subscribe(
-      () => {
-        localStorage.clear();
-        this.router.navigate(['welcome']);
-        this.showSnackBar('User successfully deleted');
-      },
-      (error) => this.showSnackBar(error)
-    );
+    const username = localStorage.getItem('username');
+    if (username) {
+      this.fetchApiData.deleteUser(username).subscribe({
+        next: () => {
+          localStorage.clear();
+          this.router.navigate(['welcome']);
+          this.showSnackBar('User successfully deleted');
+        },
+        error: (err) => {
+          console.log(err); 
+          if(err.status === 401){
+            this.showSnackBar('Your session has expired or your account has been deleted. Please log in again.');
+          } else {
+            this.showSnackBar('Error occurred while deleting user: ' + err);
+          }
+        },
+      });
+    }
   }
+  
 
   showSnackBar(message: string): void {
     this.snackBar.open(message, 'OK', {
