@@ -11,7 +11,7 @@ import { formatDate } from '@angular/common';
 })
 export class ProfilePageComponent implements OnInit {
   user: any = {};
-  updatedUserData: any = {};
+  updatedUserData: any = { Username: '', Password: '', Email: '', Birthday: '' };
 
   constructor(
     public fetchApiData: FetchApiDataService,
@@ -21,43 +21,60 @@ export class ProfilePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchUserProfile();
-    this.updatedUserData = { ...this.user }; 
   }
 
   fetchUserProfile(): void {
     const username = localStorage.getItem('username');
     if (username) {
-      this.fetchApiData.getUser(username).subscribe(
-        (response) => {
-          this.user = response;
-          const rawBirthday = new Date(this.user.Birthday);
-          this.updatedUserData.Birthday = formatDate(rawBirthday, 'yyyy-MM-dd', 'en-US', 'UTC+0');
-        },
-        (error: any) => {
-          this.showSnackBar(error);
-        }
-      );
+      this.fetchApiData.getUser(username).subscribe((response) => {
+        this.user = response;
+        this.updatedUserData = {
+          Username: this.user.Username,
+          Password: this.user.Password, 
+          Email: this.user.Email,
+          Birthday: formatDate(this.user.Birthday, 'yyyy-MM-dd', 'en-US', 'UTC+0')
+        };
+      }, (error: any) => {
+        this.showSnackBar(error);
+      });
     }
   }
 
   updateProfile(): void {
     const username = localStorage.getItem('username');
     if (username) {
-      const updatedUser = {
-        Username: this.updatedUserData.Username,
-        Email: this.updatedUserData.Email,
-        Birthday: this.updatedUserData.Birthday
-      };
+      console.log('Username retrieved:', username);
+      console.log('Updating user with data:', this.updatedUserData);
   
-      this.fetchApiData.editUser(username, updatedUser).subscribe(
+      if (!this.updatedUserData.Password) {
+        this.showSnackBar('Password is required.');
+        return;
+      }
+      if (!this.updatedUserData.Email.includes('@')) {
+        this.showSnackBar('Email not valid.');
+        return;
+      }
+  
+      this.fetchApiData.editUser(username, this.updatedUserData).subscribe(
         (response) => {
+          console.log('Server response:', response); 
           this.showSnackBar('User successfully updated');
-          this.user = response; 
+          this.user = response;
         },
-        (error: any) => this.showSnackBar(error)
+        (error: any) => {
+          console.log('Server error:', error); 
+          this.showSnackBar(error);
+        }
       );
+    } else {
+      console.log('Username not found in local storage'); 
     }
   }
+  
+  
+  
+  
+
   
   deleteUser(): void {
     const username = localStorage.getItem('username');
