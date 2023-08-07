@@ -124,17 +124,32 @@ export class FetchApiDataService {
   }
 
   // Edit user
-  editUser(username: string, updatedUser: any): Observable<any> {
+  editUser(updatedUser: any): Observable<any> {
+    const username = localStorage.getItem('username');
     const token = localStorage.getItem('token');
-    return this.http.put(apiUrl + `users/${username}`, updatedUser, {
-      headers: new HttpHeaders({
-        Authorization: 'Bearer ' + token,
-      }),
-      responseType: 'json', 
-    }).pipe(
-      catchError(this.handleError),
-    );
+  
+    console.log('Editing user:', username); // Logs the username being edited
+    console.log('Token:', token); // Logs the token
+    console.log('Data to be updated:', updatedUser); // Logs the data you're sending to the server
+  
+    return this.http
+      .put(apiUrl + 'users/' + username, updatedUser, {
+        headers: new HttpHeaders({
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json',
+        }),
+      })
+      .pipe(
+        tap((response) => {
+          console.log('Server response:', response); // Logs the server's response
+        }),
+        catchError((error) => {
+          console.log('Error:', error); // Logs any errors
+          return this.handleError(error);
+        })
+      );
   }
+  
 
 
 

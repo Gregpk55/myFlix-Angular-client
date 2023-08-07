@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FetchApiDataService } from '../fetch-api-data.service';
 import { Router } from '@angular/router';
-import { formatDate } from '@angular/common';
+
 
 @Component({
   selector: 'app-profile-page',
@@ -12,6 +12,7 @@ import { formatDate } from '@angular/common';
 export class ProfilePageComponent implements OnInit {
   user: any = {};
   updatedUserData: any = { Username: '', Password: '', Email: '', Birthday: '' };
+  userData: any = {};
 
   constructor(
     public fetchApiData: FetchApiDataService,
@@ -31,8 +32,7 @@ export class ProfilePageComponent implements OnInit {
         this.updatedUserData = {
           Username: this.user.Username,
           Password: this.user.Password, 
-          Email: this.user.Email,
-          Birthday: formatDate(this.user.Birthday, 'yyyy-MM-dd', 'en-US', 'UTC+0')
+          Email: this.user.Email,         
         };
       }, (error: any) => {
         this.showSnackBar(error);
@@ -40,41 +40,17 @@ export class ProfilePageComponent implements OnInit {
     }
   }
 
-  updateProfile(): void {
-    const username = localStorage.getItem('username');
-    if (username) {
-      console.log('Username retrieved:', username);
-      console.log('Updating user with data:', this.updatedUserData);
-  
-      if (!this.updatedUserData.Password) {
-        this.showSnackBar('Password is required.');
-        return;
+  editUser(): void {
+    console.log('Editing user:', this.user); 
+    this.fetchApiData.editUser(this.user).subscribe(
+      response => {
+        console.log('Server response:', response);      
+      },
+      error => {
+        console.error('There was an error updating the user:', error);
       }
-      if (!this.updatedUserData.Email.includes('@')) {
-        this.showSnackBar('Email not valid.');
-        return;
-      }
-  
-      this.fetchApiData.editUser(username, this.updatedUserData).subscribe(
-        (response) => {
-          console.log('Server response:', response); 
-          this.showSnackBar('User successfully updated');
-          this.user = response;
-        },
-        (error: any) => {
-          console.log('Server error:', error); 
-          this.showSnackBar(error);
-        }
-      );
-    } else {
-      console.log('Username not found in local storage'); 
-    }
-  }
-  
-  
-  
-  
-
+    );
+  }  
   
   deleteUser(): void {
     const username = localStorage.getItem('username');

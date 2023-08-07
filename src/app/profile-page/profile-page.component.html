@@ -16,17 +16,14 @@
 
     <label for="email">Email:</label>
     <input type="email" id="email" [(ngModel)]="user.Email" >
-
-    <label for="birthday">Birthday:</label>
-    <input type="date" id="birthday" [(ngModel)]="updatedUserData.Birthday">
-  
-    <label for="password" autocomplete="off">Password:</label>
-<input type="password" id="password">
+     
+    <label for="password" autocomplete="new-password">Password:</label>
+<input type="password" id="password" [(ngModel)]="user.Password">
 
   </div>
 
   <div class="buttons-container">
-    <button class="save-button" (click)="updateProfile()">Save Changes</button>
+    <button class="save-button" (click)="editUser()">Save Changes</button>
     <button mat-icon-button class="delete-button" (click)="deleteUser()">
       <mat-icon>delete</mat-icon>
     </button>
