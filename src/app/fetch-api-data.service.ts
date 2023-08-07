@@ -128,9 +128,9 @@ export class FetchApiDataService {
     const username = localStorage.getItem('username');
     const token = localStorage.getItem('token');
   
-    console.log('Editing user:', username); // Logs the username being edited
-    console.log('Token:', token); // Logs the token
-    console.log('Data to be updated:', updatedUser); // Logs the data you're sending to the server
+    console.log('Editing user:', username); 
+    console.log('Token:', token); 
+    console.log('Data to be updated:', updatedUser); 
   
     return this.http
       .put(apiUrl + 'users/' + username, updatedUser, {
@@ -141,10 +141,10 @@ export class FetchApiDataService {
       })
       .pipe(
         tap((response) => {
-          console.log('Server response:', response); // Logs the server's response
+          console.log('Server response:', response); 
         }),
         catchError((error) => {
-          console.log('Error:', error); // Logs any errors
+          console.log('Error:', error); 
           return this.handleError(error);
         })
       );
