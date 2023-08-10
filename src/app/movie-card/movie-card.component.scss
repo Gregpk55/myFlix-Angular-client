@@ -1,20 +1,25 @@
 
 
 .container {
+  background-color: rgb(196, 238, 255);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   padding: 20px;
   gap: 20px;
 }
+.mat-mdc-card-title {
+  font-size: 25px;
+}
 
 .movie-card {
   flex: 1 1 auto;
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: #cfe6ff;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  background-color: #abd2fc;
   display: flex;
   flex-direction: column;
   overflow: hidden; 
+  border: 1px solid rgb(141, 140, 140);
 }
 
 .movie-card .image-container {
@@ -41,4 +46,9 @@
   font-size: 24px;
 }
 
-  
+.myflix{
+  background-color: rgb(196, 238, 255);
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}

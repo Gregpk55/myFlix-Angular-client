@@ -14,16 +14,26 @@ import { Router } from '@angular/router';
 
 
 
-
+/**
+ * Component responsible for managing user login.
+ */
 @Component({
   selector: 'app-user-login-form',
   templateUrl: './user-login-form.component.html',
   styleUrls: ['./user-login-form.component.scss']
 })
 export class UserLoginFormComponent implements OnInit {
-
+  /**
+   * Input data for user login, containing the username and password.
+   */
   @Input() loginUserData = { Username: '', Password: '' };
-
+ /**
+   * Constructs the UserLoginFormComponent.
+   * @param fetchApiData Service for making API calls.
+   * @param dialogRef Reference to the dialog opened by this component.
+   * @param snackBar Service for showing snack bar notifications.
+   * @param router Angular Router for navigation.
+   */
 constructor(
     public fetchApiData: FetchApiDataService,
     public dialogRef: MatDialogRef<UserLoginFormComponent>,
@@ -35,7 +45,11 @@ constructor(
 ngOnInit(): void {
 }
 
-// This is the function responsible for sending the form inputs to the backend
+/**
+   * Logs the user in by sending the username and password to the backend.
+   * If successful, the authentication token and username are stored in local storage,
+   * the dialog is closed, and the user is redirected to the movies page.
+   */
 loginUser(): void {
     this.fetchApiData.userLogin(this.loginUserData).subscribe((result) => {
   // Logic for a successful user login goes here! (To be implemented)

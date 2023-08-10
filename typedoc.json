@@ -1,0 +1,11 @@
+{
+    "out": "./docs",
+    "exclude": [
+      "**/node_modules/**/*",
+      "**/*.spec.ts"
+    ],
+    "excludeExternals": true,
+    "excludePrivate": true,
+    "theme": "default"
+  }
+  

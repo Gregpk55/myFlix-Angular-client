@@ -1,14 +1,13 @@
 <div style="display: flex; justify-content: space-between; padding: 10px;">
   <div>
-    <h1>My Flix</h1>
+    <h1>{{ user.Username ? user.Username + "'s Profile" : 'Profile' }}</h1>
   </div>
-  <div>
-    <app-toolbar></app-toolbar>
   </div>
-</div>
+  
+
 
 <div class="profile-page-container">
-  <h2>Profile</h2>
+  
 
   <div class="user-details">
     <label for="username">Username:</label>
@@ -18,7 +17,7 @@
     <input type="email" id="email" [(ngModel)]="user.Email" >
      
     <label for="password" autocomplete="new-password">Password:</label>
-<input type="password" id="password" [(ngModel)]="user.Password">
+    <input type="password" id="password" [(ngModel)]="updatedPassword">
 
   </div>
 
@@ -29,3 +28,4 @@
     </button>
   </div>
 </div>
+
