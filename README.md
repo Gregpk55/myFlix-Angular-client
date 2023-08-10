@@ -14,6 +14,16 @@ The objective of this project is to build the client-side for an application cal
 ## Skills/Languages Used
 - Angular
 - Typescript
+- TypeDocs
+
+## Example Screenshot
+
+
+<p float="left">
+  <img src="./src/assets/movies.png" alt="Movies Image" width="300">
+  <img src="./src/assets/editprof.png" alt="Edit Profile Image" width="300">
+</p>
+
 
 
 ## Getting Started
